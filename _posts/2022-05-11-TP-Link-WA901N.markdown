@@ -30,7 +30,7 @@ With the router turned on I confirmed that all the other through holes had volta
     <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
 </p>
 
-Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until you found the one that prints boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
+Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until you found the one that printed boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
 
 <br>
 <p align="center">
