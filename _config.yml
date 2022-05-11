@@ -24,6 +24,7 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-gist
+  - jekyll-analytics    
 
 # Build settings
 markdown: kramdown
@@ -41,11 +42,10 @@ author:
   bio    : "Penetration Tester and Security Researcher"
 
 
-analytics:
-  provider: "google"
-  google:
-    tracking_id: "G-6FW39BECF2"
-
+jekyll_analytics:
+  GoogleAnalytics:          
+    id: G-6FW39BECF2          
+    anonymizeIp: false
 
 # pagination for blog page
 paginate: 10 # number of posts to show

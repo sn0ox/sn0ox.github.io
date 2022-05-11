@@ -292,7 +292,6 @@ DEPENDENCIES
   jekyll-paginate
   jekyll-remote-theme
   kramdown-parser-gfm
-  minima (~> 2.0)
   minimal-mistakes-jekyll
   tzinfo (~> 1.2)
   tzinfo-data
