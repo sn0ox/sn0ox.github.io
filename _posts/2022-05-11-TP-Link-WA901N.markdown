@@ -103,7 +103,7 @@ Now that I got the root password I could go back to the UART shell and try to lo
 </p>
 
 
-
+<br>
 ## Next steps
 Taking advantage of this root access, I will keep on digging in order to figure out if there is any vulnerability with this device and if anything comes up I will update this post. 
 
