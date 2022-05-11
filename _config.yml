@@ -5,9 +5,7 @@ repository: "sn0ox/sn0ox.github.io"
 baseurl: ""
 staticman:
   allowedFields: ['name', 'email', 'url', 'message']
-  branch: "gh-pages"
-
-
+  branch: "main"
 
 include:
   - _pages
@@ -29,7 +27,6 @@ plugins:
 
 # Build settings
 markdown: kramdown
-theme: "minimal-mistakes-jekyll"
 remote_theme: "mmistakes/minimal-mistakes"
 minimal_mistakes_skin: "dirt"
 
