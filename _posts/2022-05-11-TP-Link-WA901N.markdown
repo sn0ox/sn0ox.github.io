@@ -43,14 +43,14 @@ So the correct pin layout is:
     <img src="/assets/images/tplink_wa901n/uart_pin_layout.png" alt="drawing" width="350"/>
 </p>
 
-The command I used to connect was (Note the baud rate for this router is 115200): `sudo picocom -b 115200 -r -l /dev/ttyUSB0`
+The command I used to connect was `sudo picocom -b 115200 -r -l /dev/ttyUSB0` (note the baud rate for this router is **115200**)
 
 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/booting_uart.png" alt="drawing"/>
 </p>
 
-And the shell that I got was asking me for a login. I tried several default and common login credentials, but no luck.
+Once the boot process finished, I got a login prompt requesting a username and password. I tried several default and common login credentials, but no luck so I decided to move on in order to try something that would help get into the system.
 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/uart_shell_login.png" alt="drawing"/>
