@@ -16,7 +16,7 @@ This post contains detailed information of security research that i have been co
 
 
 <p align="center">
-    <img src="/images/tplink_wa901n/tplink_wa901n.png" alt="drawing" width="350"/>
+    <img src="/assets/images/tplink_wa901n/tplink_wa901n.png" alt="drawing" width="350"/>
 </p>
 
 <span style="color:#A93226; text-decoration: underline">WARNING: Keep in mind that some operations may permanentely damage your device if not performed correctly. Proceed at your own risk!</span>
@@ -27,33 +27,33 @@ While inpecting the PCB looking for exposed interfaces that I could use as an en
 With the router turned on i confirmed that all the other through holes had voltage so i decided to soldered 4 pin headers to the PCB.
 <br>
 <p align="center">
-    <img src="/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
+    <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
 </p>
 
 Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until you found the one that prints boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
 
 <br>
 <p align="center">
-    <img src="/images/tplink_wa901n/IMG_2873.jpg" alt="drawing" width="350"/>
+    <img src="/assets/images/tplink_wa901n/IMG_2873.jpg" alt="drawing" width="350"/>
 </p>
 
 So the correct pin layout is:
 <br>
 <p align="center">
-    <img src="/images/tplink_wa901n/uart_pin_layout.png" alt="drawing" width="350"/>
+    <img src="/assets/images/tplink_wa901n/uart_pin_layout.png" alt="drawing" width="350"/>
 </p>
 
 The command I used to connect was (Note the baud rate for this router is 115200): `sudo picocom -b 115200 -r -l /dev/ttyUSB0`
 
 
 <p align="center">
-    <img src="/images/tplink_wa901n/booting_uart.png" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/booting_uart.png" alt="drawing"/>
 </p>
 
 And the shell that i got was asking me for a login. I tried several default and common login credentials but no luck.
 
 <p align="center">
-    <img src="/images/tplink_wa901n/uart_shell_login.png" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/uart_shell_login.png" alt="drawing"/>
 </p>
 
 
@@ -62,20 +62,20 @@ And the shell that i got was asking me for a login. I tried several default and 
 
 During the PCB inpection I also found a SPI flash memory near the UART through holes which usually contains the device filesystem. 
 <p align="center">
-    <img src="/images/tplink_wa901n/spi_memory.png" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/spi_memory.png" alt="drawing"/>
 </p>
 
 The quickest way to test this was to use a CH341A programmer with a test clip to try to dump the memory content.
 
 <p align="center">
-    <img src="/images/tplink_wa901n/IMG_2875.JPG" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/IMG_2875.JPG" alt="drawing"/>
 </p>
 
 I connected the test clip to the SPI memory - keep in mind that all pins must be aligned which is easly achieved by matching the pin 1 on the SPI memory (marked with a dot) with the pin 1 in the test clip (red wire)
 
 <p align="center">
-    <img src="/images/tplink_wa901n/winbond_pin1.png" alt="drawing" width="250"/>
-    <img src="/images/tplink_wa901n/dumping_memory.JPG" alt="drawing" width="250"/>
+    <img src="/assets/images/tplink_wa901n/winbond_pin1.png" alt="drawing" width="250"/>
+    <img src="/assets/images/tplink_wa901n/dumping_memory.JPG" alt="drawing" width="250"/>
 </p>
 
 
@@ -83,7 +83,7 @@ With everything set, I ran the following command `sudo flashrom --programmer ch3
 
 Analyzing the file with binwalk i got confirmation that this was really the router filesystem
 <p align="center">
-    <img src="/images/tplink_wa901n/binwalk.png" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/binwalk.png" alt="drawing"/>
 </p>
 
 Once again using binwalk with the flag  "-e" to extract its contents gave me access to the filesystem which I imediately started exploring, searching for useful information. One the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encryptead password. There was only one user (root) and the password was in MD5crypt 
@@ -99,7 +99,7 @@ Anyway, the credentials are **<u>root:sohoadmin</u>**.
 
 Now that I got the root password I could go back to the UART shell and try to login... and it worked!
 <p align="center">
-    <img src="/images/tplink_wa901n/shell_access.png" alt="drawing"/>
+    <img src="/assets/images/tplink_wa901n/shell_access.png" alt="drawing"/>
 </p>
 
 
