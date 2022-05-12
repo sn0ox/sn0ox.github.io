@@ -91,7 +91,8 @@ Once again using binwalk with the flag  "-e" to extract its contents gave me acc
     root:$1$GTN.gpri$DlSyKvZKMR9A9Uj9e9wR3/:15502:0:99999:7:::
 
 The next step was to try to crack the root password, so I used hashcat to perform a dictionary attack using several known lists from SecList.
-After multiple failed attempts, I decided to brute force it... but while the attack was running I did a quick google search for that encrypted password and found several results! Apparently this is an old known password used by TP-Link (at least since 2013) so I don't know it is not in SecList or any other dictionary.
+
+After multiple failed attempts, I decided to brute force it, and while the attack was running I did a quick google search for that encrypted password and found several results! Apparently this is an old known password used by TP-Link (at least since 2013) but for some reason it is not in any common password dictionary (like SecList).
 Anyway, the credentials are **<u>root:sohoadmin</u>**.
 
 <br>
