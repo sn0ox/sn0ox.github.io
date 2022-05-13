@@ -21,16 +21,24 @@ This post contains detailed information about a security research that i have be
 
 <span style="color:#A93226; text-decoration: underline">WARNING: Keep in mind that some operations may permanently damage your device if not performed correctly. Proceed at your own risk!</span>
 
+## Intro
+I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it in order for anyone interested in testing this device. 
+
+After opening up the router, exposing its PCB I started working on a way 
+
+
 ## Getting shell access
 
-While inspecting the PCB I tried to look for exposed interfaces that I could use as an entry point to the router internal system, I found 4 pin through holes that could possibly be a UART interface. With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
+After opening up the device I started inspecting the PCB looking for exposed interfaces that I could use as an entry point to the router internal system and I found 4 pin through holes that could possibly be a UART interface. 
+
+With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
 With the router turned on I confirmed that all the other through holes had voltage so I decided to solder 4 pin headers to the PCB.
 <br>
 <p align="center">
     <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
 </p>
 
-Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until you found the one that printed boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
+Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until I found the one that printed boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
 
 <br>
 <p align="center">
