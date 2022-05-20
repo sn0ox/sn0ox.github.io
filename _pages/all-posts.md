@@ -1,33 +1,16 @@
 ---
-layout: default
-title: Tag
+permalink: /posts/
+title: "All Posts"
+excerpt: "All posts so far"
+author_profile: true
+toc: false
 ---
 
-{% comment %}
-=======================
-The following part extracts all the tags from your posts and sort tags, so that you do not need to manually collect your tags to a place.
-=======================
-{% endcomment %}
-{% assign rawtags = "" %}
+{% include base_path %}
 {% for post in site.posts %}
-	{% assign ttags = post.tags | join:'|' | append:'|' %}
-	{% assign rawtags = rawtags | append:ttags %}
-{% endfor %}
-{% assign rawtags = rawtags | split:'|' | sort %}
-
-{% comment %}
-=======================
-The following part removes dulpicated tags and invalid tags like blank tag.
-=======================
-{% endcomment %}
-{% assign tags = "" %}
-{% for tag in rawtags %}
-	{% if tag != "" %}
-		{% if tags == "" %}
-			{% assign tags = tag | split:'|' %}
-		{% endif %}
-		{% unless tags contains tag %}
-			{% assign tags = tags | join:'|' | append:'|' | append:tag | split:'|' %}
-		{% endunless %}
-	{% endif %}
+  {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+  {% if year != written_year %}
+    {% capture written_year %}{{ year }}{% endcapture %}
+  {% endif %}
+  {% include archive-single.html %}
 {% endfor %}
