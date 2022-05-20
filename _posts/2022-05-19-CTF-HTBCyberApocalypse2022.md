@@ -5,10 +5,8 @@ date: 2022-05-19
 toc: true
 toc_label: "Contents"
 toc_sticky: true
-tags:
-  - CTF
-  - Writeup
-  - Hackthebox
+category: Writeup
+tags: [CTF, Writeup, Hackthebox]
 excerpt: "Writeup of some of the challenges in the 2022 Cyber Apocalypse CTF"
 ---
 
