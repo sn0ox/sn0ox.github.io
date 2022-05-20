@@ -24,7 +24,8 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-gist
-  - jekyll-analytics    
+  - jekyll-analytics
+  - jekyll-category-pages
 
 # Build settings
 markdown: kramdown

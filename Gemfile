@@ -23,6 +23,7 @@ group :jekyll_plugins do
   gem 'jekyll-include-cache'
   gem "minimal-mistakes-jekyll"
   gem "jekyll-paginate"
+  gem "jekyll-category-pages"
 
 end
 
