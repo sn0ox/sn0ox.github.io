@@ -1,10 +1,6 @@
 ---
-permalink: /posts/
-title: "All Posts"
-excerpt: "All posts so far"
-author_profile: true
-toc: false
-
+layout: default
+title: Tag
 ---
 
 {% comment %}
