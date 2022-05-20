@@ -5,10 +5,8 @@ date: 2022-05-11
 toc: true
 toc_label: "Contents"
 toc_sticky: true
-tags:
-  - IoT
-  - research
-  - TP-Link 
+category: Research
+tags: [IoT, research, TP-Link ]
 excerpt: "Detailed information about how i got the TP-Link WA901N firmware and ultimately got shell access through the UART interface"
 ---
 
