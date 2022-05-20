@@ -1,9 +1,9 @@
 ---
-title: "About"
+title: "About me"
 permalink: /about/
+author_profile: true
+toc: false
 ---
-
-# About Me
 
 I have been doing security assessments over the last few years to a wide variety of environments from web applications to mobile applications and internal networks. Most recently I also started working on hardware hacking where I have been doing assessments to routers, RDK set-top-boxes, Android set-top-boxes and even EV charging stations in order to help clients find and mitigate vulnerabilities and thus securing their devices.
 <br>
