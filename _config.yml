@@ -41,6 +41,10 @@ author:
   name   : "Sn0ox"
   avatar : "/assets/images/avatar.png"
   bio    : "Penetration Tester and Security Researcher"
+  social:
+    github:  qwtel
+    twitter: https://twitter.com/sn0ox
+    linkedin: https://www.linkedin.com/in/diogo-tom%C3%A1s-ferreira/
 
 # google_analytics: G-6FW39BECF2
 analytics:
