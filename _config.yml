@@ -41,11 +41,12 @@ author:
   avatar : "/assets/images/avatar.png"
   bio    : "Penetration Tester and Security Researcher"
 
-
-jekyll_analytics:
-  GoogleAnalytics:          
-    id: G-6FW39BECF2          
-    anonymizeIp: false
+# google_analytics: G-6FW39BECF2
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: G-6FW39BECF2
+    anonymize_ip: false # default
 
 # pagination for blog page
 paginate: 10 # number of posts to show

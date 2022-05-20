@@ -21,16 +21,24 @@ This post contains detailed information about a security research that i have be
 
 <span style="color:#A93226; text-decoration: underline">WARNING: Keep in mind that some operations may permanently damage your device if not performed correctly. Proceed at your own risk!</span>
 
+## Intro
+I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it in order for anyone interested in testing this device. 
+
+After opening up the router, exposing its PCB I started working on a way
+
+
 ## Getting shell access
 
-While inspecting the PCB I tried to look for exposed interfaces that I could use as an entry point to the router internal system, I found 4 pin through holes that could possibly be a UART interface. With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
+After opening up the device I started inspecting the PCB looking for exposed interfaces that I could use as an entry point to the router internal system and I found 4 pin through holes that could possibly be a UART interface. 
+
+With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
 With the router turned on I confirmed that all the other through holes had voltage so I decided to solder 4 pin headers to the PCB.
 <br>
 <p align="center">
     <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
 </p>
 
-Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until you found the one that printed boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
+Using a USB to TTL module I connected to GND and then, with the router turned on, I connected the RX to each of the other pins until I found the one that printed boot information. There are other methods to find the correct pin layout, like using the multimeter or a logic analyzer, but in this case since there are only 3 possible pins it is easier and quicker this way.
 
 <br>
 <p align="center">
@@ -57,7 +65,6 @@ Once the boot process finished, I got a login prompt requesting a username and p
 </p>
 
 
-<br>
 ## Getting the firmware
 
 During the PCB inspection, I also found an SPI flash memory near the UART through holes which usually contains the device filesystem. 
@@ -86,15 +93,19 @@ Analyzing the file with binwalk I got confirmation that this was really the rout
     <img src="/assets/images/tplink_wa901n/binwalk.png" alt="drawing"/>
 </p>
 
-Once again using binwalk with the flag  "-e" to extract its contents gave me access to the filesystem which I immediately started exploring, searching for useful information. One the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
+Once again using binwalk with the flag  "-e" to extract its contents gave me access to the filesystem which I immediately started exploring, searching for useful information. 
+
+One the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
 
     root:$1$GTN.gpri$DlSyKvZKMR9A9Uj9e9wR3/:15502:0:99999:7:::
 
-The next step was to try to crack the root password, so I used hashcat to perform a dictionary attack using several known lists from SecList.
-After multiple failed attempts, I decided to brute force it... but while the attack was running I did a quick google search for that encrypted password and found several results! Apparently this is an old known password used by TP-Link (at least since 2013) so I don't know it is not in SecList or any other dictionary.
+The next step was to try to crack the root password, so I used hashcat to perform a dictionary attack using several known lists from [SecList](https://github.com/danielmiessler/SecLists)
+
+After multiple failed attempts, I decided to brute force it, and while the attack was running I did a quick google search for that encrypted password and found several results! Apparently this is an old known password used by TP-Link (at least since 2013) but for some reason it is not in any common password dictionary (like SecList).
+
 Anyway, the credentials are **<u>root:sohoadmin</u>**.
 
-<br>
+
 ## Root login
 
 Now that I got the root password I could go back to the UART shell and try to login... and it worked!
@@ -103,7 +114,6 @@ Now that I got the root password I could go back to the UART shell and try to lo
 </p>
 
 
-<br>
 ## Next steps
 Taking advantage of this root access, I will keep on digging in order to figure out if there is any vulnerability with this device and if anything comes up I will update this post. 
 
