@@ -138,7 +138,7 @@ for c in encoded_flag:
 print(flag)
 ```
 
-FLAG: **HTB{h1d1ng_1n_c0nstruct0r5_1n1t}
+FLAG: **HTB{h1d1ng_1n_c0nstruct0r5_1n1t}**
 
 
 ## Snakecode
@@ -956,6 +956,6 @@ Starting the instance and connecting with nc i got the flag
 </p>
 
 
-# Crypto
+# Web
 
 ## Coming soon
