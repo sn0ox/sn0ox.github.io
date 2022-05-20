@@ -719,7 +719,7 @@ The result was a list of base64 that I used in the windows VM once again
     <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_6.png" alt="drawing" width="900"/>
 </p>
 
-The output geve the 2nd part of the flag!
+The output gave me the 2nd part of the flag!
 <p align="center">
     <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_7.png" alt="drawing" width="900"/>
 </p>
