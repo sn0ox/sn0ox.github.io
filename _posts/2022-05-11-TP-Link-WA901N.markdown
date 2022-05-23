@@ -54,7 +54,7 @@ The command I used to connect was `sudo picocom -b 115200 -r -l /dev/ttyUSB0` (n
     <img src="/assets/images/tplink_wa901n/booting_uart.png" alt="drawing"/>
 </p>
 
-Once the boot process finished, I got a login prompt requesting a username and password. I tried several default and common login credentials, but no luck so I decided to move on in order to try to find something else that would help get into the system.
+Once the boot process finished, I got a login prompt requesting a username and password. I tried several default and common login credentials, but no luck so I decided to move on in order to try to find something else that would help me get into the system.
 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/uart_shell_login.png" alt="drawing"/>
@@ -63,7 +63,7 @@ Once the boot process finished, I got a login prompt requesting a username and p
 
 ## Getting the firmware
 
-During the PCB inspection, I also found an SPI flash memory near the UART through holes which usually contains the device filesystem. 
+During the initial PCB inspection, I also found an SPI flash memory near the UART through holes. These chips, specifically the ones near the UART interface, usually contain the device filesystem. 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/spi_memory.png" alt="drawing"/>
 </p>
@@ -82,7 +82,7 @@ I connected the test clip to the SPI memory - keep in mind that all pins must be
 </p>
 
 
-With everything set, I ran the following command `sudo flashrom --programmer ch341a_spi -r firmware.bin` to extract the memory contents into a file called **firmware.bin**
+With everything set, I ran the following command `sudo flashrom --programmer ch341a_spi -r firmware.bin` to extract the memory contents into a file called **firmware.bin** 
 
 Analyzing the file with binwalk I got confirmation that this was really the router filesystem
 <p align="center">
@@ -91,7 +91,7 @@ Analyzing the file with binwalk I got confirmation that this was really the rout
 
 Once again using binwalk with the flag  "-e" to extract its contents gave me access to the filesystem which I immediately started exploring, searching for useful information. 
 
-One the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
+Since login credentials were my main goal, one the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
 
     root:$1$GTN.gpri$DlSyKvZKMR9A9Uj9e9wR3/:15502:0:99999:7:::
 
