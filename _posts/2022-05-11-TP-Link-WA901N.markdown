@@ -28,7 +28,7 @@ I recently got access to a TP-Link WA901N which I intend to use for a side proje
 After opening up the device I started inspecting the PCB looking for exposed interfaces that I could use as an entry point to the router internal system and I found 4 pin through holes that could possibly be a UART interface. 
 
 With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
-With the router turned on I confirmed that all the other through holes had voltage so I decided to solder 4 pin headers to the PCB.
+With the router turned on I confirmed that all the other through holes had voltage and decided to solder 4 pin headers to the PCB.
 <br>
 <p align="center">
     <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
