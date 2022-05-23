@@ -20,7 +20,7 @@ This post contains detailed information about a security research that i have be
 <span style="color:#A93226; text-decoration: underline">WARNING: Keep in mind that some operations may permanently damage your device if not performed correctly. Proceed at your own risk!</span>
 
 ## Intro
-I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it in order for anyone interested in testing this device. 
+I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it with anyone interested in testing this device. 
 
 
 ## Getting shell access
