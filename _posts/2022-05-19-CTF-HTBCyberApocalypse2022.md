@@ -393,7 +393,7 @@ p.kill
 
 
 Another way I found to get the flag, was to simply send 53 "A" and trigger a buffer overflow with the last 4 bytes overwriting the param3 
-```pyhthon
+```python
 #!/usr/bin/env python
 from pwn import *
 
