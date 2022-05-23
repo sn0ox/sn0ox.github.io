@@ -22,8 +22,6 @@ This post contains detailed information about a security research that i have be
 ## Intro
 I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it in order for anyone interested in testing this device. 
 
-After opening up the router, exposing its PCB I started working on a way
-
 
 ## Getting shell access
 
