@@ -47,7 +47,7 @@ So the correct pin layout is:
     <img src="/assets/images/tplink_wa901n/uart_pin_layout.png" alt="drawing" width="350"/>
 </p>
 
-The command I used to connect was `sudo picocom -b 115200 -r -l /dev/ttyUSB0` (note the baud rate for this router is **115200**)
+The command I used to connect was `sudo picocom -b 115200 /dev/ttyUSB0` (note the baud rate for this router is **115200**)
 
 
 <p align="center">
