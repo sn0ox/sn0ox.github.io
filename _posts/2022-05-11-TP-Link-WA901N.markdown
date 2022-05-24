@@ -82,7 +82,10 @@ I connected the test clip to the SPI memory - keep in mind that all pins must be
 </p>
 
 
-With everything set, I ran the following command `sudo flashrom --programmer ch341a_spi -r firmware.bin` to extract the memory contents into a file called **firmware.bin** 
+With everything set, I ran the following command `sudo flashrom --programmer ch341a_spi -r firmware.bin` to extract the memory contents into a file called **firmware.bin**
+<p align="center">
+    <img src="/assets/images/tplink_wa901n/spi_flash_dump.png" alt="drawing"/>
+</p>
 
 Analyzing the file with binwalk I got confirmation that this was really the router filesystem
 <p align="center">
