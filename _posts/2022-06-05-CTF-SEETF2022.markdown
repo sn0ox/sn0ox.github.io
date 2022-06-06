@@ -1,0 +1,358 @@
+---
+title:  "[CTF-Writeup] SEETF 2022"
+category: posts
+date: 2022-06-05
+toc: true
+toc_label: "Contents"
+toc_sticky: true
+category: Writeup
+tags: [CTF, Writeup, SEETF]
+excerpt: "Writeup of some of the challenges in the 2022 SEETF CTF"
+---
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/logo.png" alt="drawing" width="900"/>
+</p>
+
+# PWN
+
+## 4mats
+
+For this challenge we were given an application and its source code (C program). Analysing the code I saw that it was vulnerable to format string since it was printing the user input directly when option 2 is selected
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/4mats_vuln.png" alt="drawing" width="600"/>
+</p>
+
+Another interesting thing is that if the variable **set** is equal to 4, and no valid option is selected, the app calls guess_me without generating a new fav_num (reusing the existing one)!
+
+Launching the application and following the logic above to get me the flag.
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/4mats_goto_label.png" alt="drawing" width="900"/>
+</p>
+
+So in order to exploit this vulnerability and get the flag, I had to use option **1** four times and than use option **2** once to exploit the format string vulnerability so I could get the fav_num in memory! Finally to get the flag I just needed to choose a random option (could not be neither 1 or 2... I choose 4 just because) so it would trigger a call to the gess_me function without generating a new number... Testing locally in GDB
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/4mats_getfav_num.png" alt="drawing" width="900"/>
+</p>
+
+The 7th value is the **fav_num** and what we want. Using that number and continuing I was successfull (got an error with the cat command because I didn't had the flag.txt file)
+
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/4mats_local.png" alt="drawing" width="900"/>
+</p>
+
+
+Good... now remotely
+
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/4mats_remote.png" alt="drawing" width="900"/>
+</p>
+
+
+FLAG: **SEE{4_f0r_4_f0rm4t5_0ebdc2b23c751d965866afe115f309ef}**
+
+<br>
+## wayyang
+Looking at the py code it I saw that it was accepting an input for option 4 and opening a file (with cat command). The only check that was being made was to the filename, where it would verify if the user input contained any character from the string "FLAG", failing if it did.
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/wayyabg_vuln.png" alt="drawing" width="900"/>
+</p>
+
+Since the filename was being used in an "eval" function, it was possible to just run code in it, so I encoded the string "FLAG" in hex and than wrote a python line to decode it again
+```python
+bytearray.fromhex("464c4147").decode()
+```
+
+running it against the server got me the flag
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/pwn/wayyabg_remote.png" alt="drawing" width="900"/>
+</p>
+
+
+FLAG: **SEE{wayyang_as_a_service_621331e420c46e29cfde50f66ad184cc}**
+
+
+<br>
+# Reverse
+
+## babyreeee
+
+I was given an application for this challenge, so using ghidra to decompile it, I saw that the application was getting the flag from the user input, comparing each character to a character in an array after a XOR operation... if it failed it would print the index where it failed. which makes it easy to brute force...
+
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/reverse/babyreeee_vuln.png" alt="drawing" width="900"/>
+</p>
+
+I wrote a simple python script to do this.
+```python
+#!/usr/bin/env python
+from pwn import *
+
+context.log_level = 'error'
+flag="SEE{aaaaaaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaa}"
+keep_going = True
+current_error_index = 0
+current_char = 33
+
+while keep_going:
+	p = process("./chall")
+	p.recvuntil("Please enter the flag.")
+	p.sendline(flag)
+	line = str(p.recvall(), "utf-8)")
+	if "Flag check failed at index" in line:
+		error_index = int(line[-2:])
+		if current_error_index != error_index:
+
+		current_error_index = error_index
+		current_char = 33		
+		print("Current flag is: %s" % flag)
+		
+		try:
+				flag = flag[:error_index] + chr(current_char) + flag[error_index+1:]
+			
+			cursor_index += 1
+			current_char += 1
+		except Exception as e:
+			print("error! %s" %e)
+		
+		break
+	
+	  
+	
+	elif "Success! Go get your points, champ." in line:
+		keep_going = False
+		print(flag)
+	  
+	p.kill
+```
+
+Running it and I got the flag.
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/reverse/babyreeee_flag.png" alt="drawing" width="900"/>
+</p>
+
+
+FLAG: **SEE{0n3_5m411_573p_81d215e8b81ae10f1c08168207fba396}**
+
+# Crypto
+
+## Close Enough
+
+For this challenge I was given a cyphered text, a public key and python script that was used to encrypt the cyphered text.  
+Using RsaCtfTool.py I ran 
+```
+RsaCtfTool.py --publickey key --private
+```
+This gave me the private key that was used.
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/crypto/close_enough_privkey.png" alt="drawing" width="900"/>
+</p>
+
+Now with the private key I just parsed the cypher that was given to bytes (in the original code it was being parse from bytes to long)
+
+```python
+from Crypto.Util.number import long_to_bytes
+
+
+cypher = 4881495507745813082308282986718149515999022572229780274224400469722585868147852608187509420010185039618775981404400401792885121498931245511345550975906095728230775307758109150488484338848321930294974674504775451613333664851564381516108124030753196722125755223318280818682830523620259537479611172718588812979116127220273108594966911232629219195957347063537672749158765130948724281974252007489981278474243333628204092770981850816536671234821284093955702677837464584916991535090769911997642606614464990834915992346639919961494157328623213393722370119570740146804362651976343633725091450303521253550650219753876236656017
+
+cypher_bytes = long_to_bytes(cypher)
+
+print(cypher_bytes.hex())
+```
+Finally using cyberchef
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/crypto/close_enough_flag.png" alt="drawing" width="900"/>
+</p>
+
+FLAG: **SEE{i_love_really_secure_algorithms_b5c0b187fe309af0f4d35982fd961d7e}**
+
+
+# Forensics
+
+## Sniffed Traffic
+
+For this challenge I was given a network capture file and I was told that someone downloaded a file and I would need to find the contents of that file. So filtering in wireshark for **http || http2 || file** and I got a zip file
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/forensics/sniffed_traffic_file.png" alt="drawing" width="900"/>
+</p>
+
+I saved that file and tried to unzip it but it was password protected so tried using strings and grep to see if it was shared in a message... and it was! I got the password 49949ec89a41ed9bdd18c4ce74f37ae4
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/forensics/sniffed_traffic_file_password.png" alt="drawing" width="900"/>
+</p>
+
+
+Unziping it got me a file called stuff, that was just seen as "data". Using bin walk I found it was indeed a zip file again.
+
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/forensics/sniffed_traffic_stuff_zip.png" alt="drawing" width="900"/>
+</p>
+
+Trying to unzip it and I found that it was yet another password protected zip... tried different password until I decided to just bruteforce it...
+First I ran zip2john to get a hash file that I could use in john.
+```
+zip2john -m stuff > stuff.hash
+```
+
+and then
+
+```
+john --wordlist=/opt/SecLists/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt  stuff.hash
+```
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/forensics/sniffed_traffic_stuff_zip_cracked.png" alt="drawing" width="900"/>
+</p>
+
+
+password was "john"! Unziping it and I got the flag.txt file!
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/forensics/sniffed_traffic_stuff_flag.png" alt="drawing" width="900"/>
+</p>
+
+FLAG: **SEE{w1r35haRk_d0dod0_4c87be4cd5e37eb1e9a676e110fe59e3}**
+
+
+# Misc
+
+## Regex101
+
+
+Removed all "SEE{" and "} from the original file and using a regex to get the flag which had the correct format!
+I used the regex ^([A-Z]{5})([0-9]{5})([A-Z]{6})
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/misc/regex.png" alt="drawing" width="900"/>
+</p>
+
+
+## Angry Zeyu2001
+
+Downloading the challenge and unziping it, got me 1219 jpg files. IT was obvious from the names that it was **width.height.jpg**
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/misc/andry_pieces.png" alt="drawing" width="900"/>
+</p>
+
+So I wrote a small script to put it all together.
+
+``` python
+import sys
+import os
+from PIL import Image
+
+arr = os.listdir("pieces/")
+images = [Image.open("pieces/" + x) for x in arr]
+total_width = 700
+max_height = 250
+
+
+new_im = Image.new('RGB', (total_width, max_height))
+
+  
+for im in images:
+	sizes = im.filename.split("/")[-1].split(".")
+	new_im.paste(im, (int(sizes[0]), int(sizes[1])))
+
+  
+new_im.save('test.jpg')
+```
+
+
+The output of the script was a new jpg file with the flag
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/misc/andry_flag.png" alt="drawing" width="900"/>
+</p>
+
+FLAG: **SEE{boss_aint_too_happy_bout_me_9379c958d872435}**
+
+
+# SmartContract
+
+## Bonjour
+
+Followed the steps in the git page tutorial of this challenge, to setup the environment. Then I uploaded the contract from the challenge into remix IDE
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Bonjour {
+
+  string public welcomeMessage;
+
+  constructor() {
+    welcomeMessage = "Bonjour";
+  }
+
+  function setWelcomeMessage(string memory _welcomeMessage) public {
+    welcomeMessage = _welcomeMessage;
+  }
+
+  function isSolved() public view returns (bool) {
+    return keccak256(abi.encodePacked("Welcome to SEETF")) == keccak256(abi.encodePacked(welcomeMessage));
+  }
+}
+```
+
+
+After a bit of time playing with it, I connected Remix to my MetaMask wallet and pasted the contract address that I initiated in the challenge server in order to load it and interact with it.
+
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/smartcontracts/bonjour_load.png" alt="drawing" width="900"/>
+</p>
+
+
+The contract was simple enough to read, just had to set the message value to "Welcome to SEETF" and the isSolved() function would return true. In remixIDE i set the message and than in the challenge server I just got the flag.
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/smartcontracts/bonjour_flag.png" alt="drawing" width="900"/>
+</p>
+
+
+# WEB
+
+## Sourceless Guessy Web
+
+This challenge was an obvious path traversal vulnerability... so after a few tries, i used  **page=../../../../etc/passwd** and got the flag.
+
+<p align="center">
+    <img src="/assets/images/ctf_seetf2022/web/sourceless_guessy_web_flag.png" alt="drawing" width="900"/>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
