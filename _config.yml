@@ -41,7 +41,10 @@ author:
   name   : "Sn0ox"
   avatar : "/assets/images/avatar.png"
   bio    : "Penetration Tester and Security Researcher"
-
+  github:  "sn0ox"
+  linkedin: "diogo-tom%C3%A1s-ferreira"
+    
+    
 # google_analytics: G-6FW39BECF2
 analytics:
   provider: "google-gtag"

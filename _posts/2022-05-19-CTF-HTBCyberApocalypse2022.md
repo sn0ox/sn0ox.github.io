@@ -393,7 +393,7 @@ p.kill
 
 
 Another way I found to get the flag, was to simply send 53 "A" and trigger a buffer overflow with the last 4 bytes overwriting the param3 
-```pyhthon
+```python
 #!/usr/bin/env python
 from pwn import *
 
@@ -427,6 +427,49 @@ Testing it remotely
 FLAG: **HTB{n0_n33d_2_ch4ng3_m3ch5_wh3n_u_h4v3_fl0w_r3d1r3ct}**
 
 # Forensics
+
+## Puppeter
+Downloading all the windows event log files, i used a VM to make it easier to analyze.
+
+I used a tool called [chainsaw]([https://duckduckgo.com](https://github.com/countercept/chainsaw)) to analyze the log file with the command to log file with:
+```
+.\chainsaw.exe hunt .\Logs --rules  .\sigma_rules\ --mapping .\mapping_files\sigma-mapping.yml --full
+```
+
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/puppeter_1.png" alt="drawing" width="600"/>
+</p>
+
+A powershell script got tagged as suspicious. Digging into the logs i found that the ps1 script was in “Microsoft-Windows-PowerShell%4Operational.evtx”
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/puppeter_2.png" alt="drawing" width="600"/>
+</p>
+
+Reading the script I found that there were 3 variables used to build the payload
+```
+stage1 - 0x99  0x85 0x93 0xaa  0xb3 0xe2 0xa6 0xb9 0xe5 0xa3 0xe2  0x8e 0xe1 0xb7 0x8e 0xa5 0xb9 0xe2 0x8e 0xb3
+stage2 - 0xac 0xff xff 0xff 0xe2 0xb2 0xe0 0xa5 0xa2 0xa4 0xbb 0x8e 0xb7 0xe1 0x8e 0xe4 0xa5 0xe1 0xe1
+stage3 = stage1 + reversed(stage2)
+```
+
+the stage3 variable I calculated it and was
+```
+stage3 = 0x99  0x85 0x93 0xaa  0xb3 0xe2 0xa6 0xb9 0xe5 0xa3 0xe2  0x8e 0xe1 0xb7 0x8e 0xa5 0xb9 0xe2 0x8e 0xb3
+0xe1 0xe1 0xa5 0xe4 0x8e 0xe1 0xb7 0x8e 0xbb 0xa4 0xa2 0xa5 0xe0 0xb2 0xe2 0xff 0xff 0xff 0xac
+```
+
+Then stage3 was xored with 0xd1
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/puppeter_3.png" alt="drawing" width="600"/>
+</p>
+
+so using cyberchef to get the flag
+<p align="center">
+    <img src="/assets/images/ctf_cyberapocalypse2022/forensics/puppeter_4.png" alt="drawing" width="900"/>
+</p>
+
+FLAG: **HTB{b3whar3_0f_th3_b00t5_0f_just1c3...}**
+
 
 ## Golden persistence
 
@@ -719,7 +762,7 @@ The result was a list of base64 that I used in the windows VM once again
     <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_6.png" alt="drawing" width="900"/>
 </p>
 
-The output geve the 2nd part of the flag!
+The output gave me the 2nd part of the flag!
 <p align="center">
     <img src="/assets/images/ctf_cyberapocalypse2022/forensics/automation_7.png" alt="drawing" width="900"/>
 </p>

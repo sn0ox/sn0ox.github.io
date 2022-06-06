@@ -20,9 +20,7 @@ This post contains detailed information about a security research that i have be
 <span style="color:#A93226; text-decoration: underline">WARNING: Keep in mind that some operations may permanently damage your device if not performed correctly. Proceed at your own risk!</span>
 
 ## Intro
-I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it in order for anyone interested in testing this device. 
-
-After opening up the router, exposing its PCB I started working on a way
+I recently got access to a TP-Link WA901N which I intend to use for a side project, but before that and since I am relatively new to hardware hacking,  I thought it would be interesting to try to gain access to its internal system and documenting the journey so I could share it with anyone interested in testing this device. 
 
 
 ## Getting shell access
@@ -30,7 +28,7 @@ After opening up the router, exposing its PCB I started working on a way
 After opening up the device I started inspecting the PCB looking for exposed interfaces that I could use as an entry point to the router internal system and I found 4 pin through holes that could possibly be a UART interface. 
 
 With the router turned off and using a multimeter's continuity test function, I tested all pins through holes against a known ground (I just used the router CPU metal cover... it worked). Only one made my multimeter *beeped* so that was **GND**.
-With the router turned on I confirmed that all the other through holes had voltage so I decided to solder 4 pin headers to the PCB.
+With the router turned on I confirmed that all the other through holes had voltage and decided to solder 4 pin headers to the PCB.
 <br>
 <p align="center">
     <img src="/assets/images/tplink_wa901n/pins_soldiered_pcb.jpg" alt="drawing" width="350"/>
@@ -49,14 +47,14 @@ So the correct pin layout is:
     <img src="/assets/images/tplink_wa901n/uart_pin_layout.png" alt="drawing" width="350"/>
 </p>
 
-The command I used to connect was `sudo picocom -b 115200 -r -l /dev/ttyUSB0` (note the baud rate for this router is **115200**)
+The command I used to connect was `sudo picocom -b 115200 /dev/ttyUSB0` (note the baud rate for this router is **115200**)
 
 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/booting_uart.png" alt="drawing"/>
 </p>
 
-Once the boot process finished, I got a login prompt requesting a username and password. I tried several default and common login credentials, but no luck so I decided to move on in order to try to find something else that would help get into the system.
+Once the boot process finished, I got a login prompt requesting a username and password. I tried several default and common login credentials, but no luck so I decided to move on in order to try to find something else that would help me get into the system.
 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/uart_shell_login.png" alt="drawing"/>
@@ -65,7 +63,7 @@ Once the boot process finished, I got a login prompt requesting a username and p
 
 ## Getting the firmware
 
-During the PCB inspection, I also found an SPI flash memory near the UART through holes which usually contains the device filesystem. 
+During the initial PCB inspection, I also found an SPI flash memory near the UART through holes. These chips, specifically the ones near the UART interface, usually contain the device filesystem. 
 <p align="center">
     <img src="/assets/images/tplink_wa901n/spi_memory.png" alt="drawing"/>
 </p>
@@ -85,6 +83,9 @@ I connected the test clip to the SPI memory - keep in mind that all pins must be
 
 
 With everything set, I ran the following command `sudo flashrom --programmer ch341a_spi -r firmware.bin` to extract the memory contents into a file called **firmware.bin**
+<p align="center">
+    <img src="/assets/images/tplink_wa901n/spi_flash_dump.png" alt="drawing"/>
+</p>
 
 Analyzing the file with binwalk I got confirmation that this was really the router filesystem
 <p align="center">
@@ -93,7 +94,7 @@ Analyzing the file with binwalk I got confirmation that this was really the rout
 
 Once again using binwalk with the flag  "-e" to extract its contents gave me access to the filesystem which I immediately started exploring, searching for useful information. 
 
-One the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
+Since login credentials were my main goal, one the first files I looked for was the shadow file that is located in the /etc directory since it contains the users encrypted password. There was only one user (root) and the password was in MD5crypt 
 
     root:$1$GTN.gpri$DlSyKvZKMR9A9Uj9e9wR3/:15502:0:99999:7:::
 
