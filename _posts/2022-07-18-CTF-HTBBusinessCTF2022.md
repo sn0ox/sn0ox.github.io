@@ -21,14 +21,14 @@ excerpt: "Writeup of some of the challenges in the 2022 Business CTF"
 No files were given, just a docker instance... Accessing the docker instance and I got a filesystem 
 
 <p align="center">
-    <img src="/assets/images/ctf_business2022/rev/breakout_1.png" alt="drawing" width="600"/>
+    <img src="/assets/images/ctf_business2022/rev/breakout_1.png" alt="drawing"/>
 </p>
 
 Going to the all common locations (/etc/passwd, /home, /roo/, etc.. ) i got nothing… So, I went the proc folder to see what was running on the system
 
 
 <p align="center">
-    <img src="/assets/images/ctf_business2022/rev/breakout_2.png" alt="drawing" width="600"/>
+    <img src="/assets/images/ctf_business2022/rev/breakout_2.png" alt="drawing"/>
 </p>
 
 From this I immediately got the 1 and 8 folder that referenced a PID… the PID 8 was interesting and the cmdline file got me the command that was run and revealing the binary **/bkd** 
@@ -52,14 +52,14 @@ FLAG: **HTB{th3_pr0c_f5_15_4_p53ud0_f1l35y5t3m_wh1ch_pr0v1d35_4n_1nt3rf4c3.....}
 <br>
 ## ChromeMiner
 
-The challenge gave me a DiscurdNitru.crx file… using google I found that I could extract its content (chrome extention by the way) in [https://robwu.nl/crxviewer/](https://robwu.nl/crxviewer/) 
-Using it, I found that it had aa JS file called background (among others)
+The challenge gave me a DiscurdNitru.crx file… using google I found that I could extract its content (chrome extension by the way) in [https://robwu.nl/crxviewer/](https://robwu.nl/crxviewer/) 
+Using it, I found that it had a JS file called background (among others)
 
 <p align="center">
     <img src="/assets/images/ctf_business2022/rev/chromeminer_1.png" alt="drawing" width="600"/>
 </p>
 
-That files was obfuscated, divided in 2 parts with 2 different dictionaries for each part.
+That file was obfuscated, divided in 2 parts with 2 different dictionaries for each part.
 
 ```javascript
 async function iF() {
@@ -101,7 +101,7 @@ chrome[q[0x1c0] + q[0x1e7] + q[0xe] + q[0x49a] + q[0x47e] + q[0x55f] + q[0x179] 
 });
 ```
 
-I used a python script to get everything i the final result was
+I used a python script to get everything and the final result was
 
 
 ```javascript
@@ -144,7 +144,7 @@ chrome[tabs][onUpdated][addListener]((tabVar, changeInfo, tab) => {
 ```
 
 
-Reading the code it was easy to see thatthe hex **E242E64261D21969F65BEDF954900A995209099FB6C3C682C0D9C4B275B1C212BC188E0882B6BE72C749211241187FA8** was encrypted using AES and the key and IV were **_NOT_THE_SECRET_**
+Reading the code it was easy to see that the hex **E242E64261D21969F65BEDF954900A995209099FB6C3C682C0D9C4B275B1C212BC188E0882B6BE72C749211241187FA8** was encrypted using AES and the key and IV were **_NOT_THE_SECRET_**
 
 Using cyberchef I got the flag
 <p align="center">
@@ -581,7 +581,7 @@ Looking at the doc file I was given, I extracted macros in it using olevba
 
 After reversing the string to make it look cleaner
 
-```vbs
+```vbscript
 Sub AutoOpen()
     Dim QQ1 As Object
     Set QQ1 = ActiveDocument.Shapes(1)
@@ -609,12 +609,12 @@ End Sub
 
 So, from the script I knew that the script pin.vbs was going to be used so i needed that as well. Going to [any.run](https://any.run/) and I was able to the get it!
 <p align="center">
-    <img src="/assets/images/ctf_business2022/forensics/mbcoin_2.png" alt="drawing" width="600"/>
+    <img src="/assets/images/ctf_business2022/forensics/mbcoin_2.png" alt="drawing"/>
 </p>
 
 I clean the scritp a bit to make it more "readable" and the final result was 
 
-```vbs
+```vbscript
 Dim WAITPLZ, WS, k, kl
 WAITPLZ = DateAdd(Chr(115), 4, Now())
 Do Until (Now() > WAITPLZ)
